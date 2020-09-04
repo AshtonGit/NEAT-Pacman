@@ -1,0 +1,37 @@
+
+games max time is 2 minutes
+if no actors change direction for 10 seconds, end game
+
+
+Requirements:
+game timer for max time
+game timer and method for timeouts
+
+run and eval_genomes
+tournament selection
+
+Graphical representation
+- timer
+- fitness trackers
+- walls and candy
+- ghosts and pacman models
+
+
+
+
+1.run and eval implemented
+    with tournament selectiomn in place
+
+2. timers and timeout condition setup for game
+
+3. graphical representation online
+    - models or rects for game objects
+    - drawing game surface
+    - display timers
+    - show fitness
+
+
+how to match number of pacmen to number of ghosts???
+
+have 0.25 pacman for each ghost
+or average out ghosts fitness by each game they played.
