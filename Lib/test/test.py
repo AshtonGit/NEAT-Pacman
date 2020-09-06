@@ -1,6 +1,6 @@
 import unittest
 
-from Lib.pacman.game import Game
+from Lib.pacman.pacman_with_ghosts.game import Game
 
 
 class MyTestCase(unittest.TestCase):

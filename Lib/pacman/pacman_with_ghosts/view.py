@@ -1,22 +1,5 @@
-import sys
-from math import exp
-from time import sleep
 from datetime import datetime
-
 import pygame
-from pathlib import Path
-
-
-# from Lib.pacman.game import Tiles
-
-
-# need to open or close pacmans mouith
-# download and import actor images
-# Tests use mopck controllers
-# test and polish gui
-# add a timer
-# add fitness scores
-# show to aidan and rhona
 
 
 class View:

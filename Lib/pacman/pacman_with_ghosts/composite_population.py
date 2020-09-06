@@ -2,7 +2,7 @@ import neat
 from neat.math_util import mean
 from neat.reporting import ReporterSet
 
-from Lib.pacman.view import View
+from Lib.pacman.pacman_with_ghosts.view import View
 
 
 class CompositePopulation(neat.Population):
@@ -123,7 +123,6 @@ class CompositePopulation(neat.Population):
             self.ghost_species.speciate(self.config, self.ghost_pop, self.generation)
             self.reporters.end_generation(self.config, self.ghost_pop, self.ghost_species)
 
-
             best_pacman = None
             for p in self.pacman_pop.values():
                 if p.fitness is None:
@@ -166,8 +165,8 @@ class CompositePopulation(neat.Population):
             self.reporters.end_generation(self.config, self.pacman_pop, self.pacman_species)
 
             for checkpoint in self.checkpointers:
-                checkpointer.end_generation(self.config, self.pacman_pop, self.pacman_species,
-                                            self.ghost_pop, self.ghost_species)
+                checkpoint.end_generation(self.config, self.pacman_pop, self.pacman_species,
+                                          self.ghost_pop, self.ghost_species)
             self.generation += 1
 
         if self.config.no_fitness_termination:

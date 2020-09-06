@@ -1,6 +1,6 @@
 import neat
 import random
-from Lib.pacman.game import Game
+from Lib.pacman.pacman_with_ghosts.game import Game
 
 
 # Only run as a demon thread. This ends the program window if pygame closed

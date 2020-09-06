@@ -6,6 +6,8 @@ from pathlib import Path
 from time import sleep
 import pygame
 from neat.math_util import softmax
+
+
 # ghosts and pacman positions are continous but the blocks that make the game up are discrete.
 # Positions are floats. blocks are at integer positions. floats are between blocks. Each block is 1.0x1.0 dimensions
 # this way movement can appear continouous but for ai purposes its discrete.
@@ -73,56 +75,55 @@ class Actor(GameObject):
         self.controller = controller
         self.fitness = fitness
         self.field_of_view = (5, 5)
-        self.size = 0.85 # actors are 17x17 pixels in size. Tiles are 20px. 17 is 0.85 of 20
+        self.size = 0.85  # actors are 17x17 pixels in size. Tiles are 20px. 17 is 0.85 of 20
         self.velocity = (0, 0)
         self.speed = speed
 
     def get_vision(self, tiles):
 
-            x_w = int(self.field_of_view[1] / 2)
-            y_w = int(self.field_of_view[0] / 2)
+        x_w = int(self.field_of_view[1] / 2)
+        y_w = int(self.field_of_view[0] / 2)
 
-            x_pos = self.position[1]
-            y_pos = self.position[0]
+        x_pos = self.position[1]
+        y_pos = self.position[0]
 
-            # view is centered at character position
-            x = x_pos
-            y = y_pos
+        # view is centered at character position
+        x = x_pos
+        y = y_pos
 
+        # if view would go out of bounds in either direction, adjust view to fit
+        if x_pos + x_w >= width:
+            x = width - self.field_of_view[1] - 1
+        elif x_pos - x_w < 0:
+            x = 0
+        else:
+            x = x - x_w
 
-            # if view would go out of bounds in either direction, adjust view to fit
-            if x_pos + x_w >= width:
-                x = width - self.field_of_view[1] - 1
-            elif x_pos - x_w < 0:
-                x = 0
-            else:
-                x = x - x_w
+        if y_pos + y_w >= height:
+            y = height - self.field_of_view[0] - 1
+        elif y_pos - y_w < 0:
+            y = 0
+        else:
+            y = y - y_w
 
-            if y_pos + y_w >= height:
-                y = height - self.field_of_view[0] - 1
-            elif y_pos - y_w < 0:
-                y = 0
-            else:
-                y = y - y_w
-
-            try:
-                # get tile data for tiles in that fall in actors field of view
-                vision = []
-                y = int(y)
-                x = int(x)
-                for i in range(y, y + self.field_of_view[1]):
-                    row = []
-                    for j in range(x, x + self.field_of_view[0]):
-                        row.append(tiles[i][j])
-                    vision.append(row)
-                return vision
-            except IndexError as e:
-                print(e)
-                print("Xpos",str(x_pos))
-                print("Ypos",str(y_pos))
-                print(str(x))
-                print(str(y))
-                raise e
+        try:
+            # get tile data for tiles in that fall in actors field of view
+            vision = []
+            y = int(y)
+            x = int(x)
+            for i in range(y, y + self.field_of_view[1]):
+                row = []
+                for j in range(x, x + self.field_of_view[0]):
+                    row.append(tiles[i][j])
+                vision.append(row)
+            return vision
+        except IndexError as e:
+            print(e)
+            print("Xpos", str(x_pos))
+            print("Ypos", str(y_pos))
+            print(str(x))
+            print(str(y))
+            raise e
 
     def update_velocity(self, velocity):
         self.velocity = velocity
@@ -145,7 +146,7 @@ class Pacman(Actor):
 
     def __init__(self, position, key, controller):
         super().__init__((0, 255, 255), position, 0.2, key, controller, 0)
-        base_path = Path(__file__).parent
+        base_path = Path(__file__).parent.parent
         asset_path = str((base_path / "../assets").resolve())
         self.models = {"left": pygame.image.load(asset_path + "/pacman-left.png"),
                        "right": pygame.image.load(asset_path + "/pacman-right.png"),
@@ -155,8 +156,8 @@ class Pacman(Actor):
         self.facing = "left"
         self.open_close_time = datetime.now()
         self.is_closed = False
-        self.size = 0.9 # pacman is 1x1 tile (20px), but need to make him slightly smaller to allow him to move thrghou
-                        # one tile wide gaps
+        self.size = 0.9  # pacman is 1x1 tile (20px), but need to make him slightly smaller to allow him to move thrghou
+        # one tile wide gaps
 
     # Return a sprite image representing pacmans current state or direction
     # pacman opens and closes his mouth every 0.4 seconds
@@ -204,18 +205,18 @@ class Pacman(Actor):
         else:
             self.facing = "left"
         self.velocity = velocity
-            
-            
+
+
 class Ghost(Actor):
 
     def __init__(self, color, model, position, key, controller):
         super().__init__(color, position, 0.2, key, controller, 0)
-        base_path = Path(__file__).parent
+        base_path = Path(__file__).parent.parent
         asset_path = str((base_path / "../assets").resolve())
         self.models = {"left": pygame.image.load(asset_path + model + "-left.png"),
                        "right": pygame.image.load(asset_path + model + "-right.png")}
         self.facing = "left"
-        self.size = 0.7 # ghosts are 0.7 tiles (14px) tall and wide
+        self.size = 0.7  # ghosts are 0.7 tiles (14px) tall and wide
 
     def get_model(self):
         return self.models[self.facing]
@@ -282,11 +283,11 @@ class Game:
             self.ghosts.append(Ghost((255, 0, 0), model_prefix.pop(), ghost_spawn.pop(), key, controller))
 
     def play_game(self):
-        #every second, update ghosts fitness
+        # every second, update ghosts fitness
         g_fit_manager = threading.Thread(target=manage_ghost_fitness, args=(self,), daemon=True)
         g_fit_manager.start()
         # Game ends after 90 seconnds
-        #end_game_if_timelimit_reached(self, 90)
+        # end_game_if_timelimit_reached(self, 90)
         end_game_time = threading.Thread(target=end_game_if_timelimit_reached, args=(self, 90), daemon=True)
         end_game_time.start()
         # Game ends if no actor changes position after 1 seconds
@@ -294,8 +295,8 @@ class Game:
         end_game_stuck.start()
         # start display to show game state to human viewer
 
-     #   display_thread = threading.Thread(target=view.display_game, args=(self,), daemon=True)
-    #    display_thread.start()
+        #   display_thread = threading.Thread(target=view.display_game, args=(self,), daemon=True)
+        #    display_thread.start()
         while not self.game_over:
             self.actors_next_move(self.pacman)
             for ghost in self.ghosts:
@@ -315,7 +316,7 @@ class Game:
         g_fit_manager.join()
         end_game_stuck.join()
         end_game_time.join()
-     #  display_thread.join()
+        #  display_thread.join()
 
         # return fitness of each network
         fitness = {}
@@ -394,29 +395,28 @@ class Game:
         size = actor.size
         # to stop animation clipping when moving right or down as actor coordinates are their top left position
         # need to check both corners in direction moving
-        if velocity[1] > 0: #moving right
+        if velocity[1] > 0:  # moving right
             x = int(x + size)
-            top_right = self.tiles[int(y)][x] # top right corner
+            top_right = self.tiles[int(y)][x]  # top right corner
             y = int(y + size)
-            bottom_right = self.tiles[y][x] # bottom left corner
+            bottom_right = self.tiles[y][x]  # bottom left corner
             return top_right != Tiles.WALL.value and bottom_right != Tiles.WALL.value
-        elif velocity[0] > 0: # moving down
+        elif velocity[0] > 0:  # moving down
             y = int(y + size)
             bottom_left = self.tiles[y][int(x)]
             x = int(x + size)
             bottom_right = self.tiles[y][x]
             return bottom_left != Tiles.WALL.value and bottom_right != Tiles.WALL.value
-        elif velocity[1] < 0: # moving left
+        elif velocity[1] < 0:  # moving left
             top_left = self.tiles[int(y)][int(x)]
             y = int(y + size)
             bottom_left = self.tiles[y][int(x)]
             return top_left != Tiles.WALL.value and bottom_left != Tiles.WALL.value
-        elif velocity[0] < 0: #moving up
+        elif velocity[0] < 0:  # moving up
             top_left = self.tiles[int(y)][int(x)]
-            x = int( x + size)
+            x = int(x + size)
             top_right = self.tiles[int(y)][x]
             return top_left != Tiles.WALL.value and top_right != Tiles.WALL.value
-
 
     def build_velocity(self, actor, move):
         if move == 0:
@@ -436,6 +436,7 @@ def manage_ghost_fitness(game):
     while not game.game_over:
         game.update_ghost_fitness()
         sleep(1)
+
 
 def end_game_if_timelimit_reached(game, max_time):
     start = datetime.now()
