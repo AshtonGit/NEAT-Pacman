@@ -63,7 +63,7 @@ def end_game_if_actors_stuck(game, timeout):
         else:
             duration_inactive = 0
         # check position every second
-        sleep(0.8)
+        sleep(0.5)
 
 
 def build_velocity(actor, move):
@@ -81,7 +81,7 @@ def build_velocity(actor, move):
 
 class Pacman:
 
-    def __init__(self, position, key, controller, speed=0.2, color=(0, 255, 255)):
+    def __init__(self, position, key, controller, speed=0.4, color=(0, 255, 255)):
         self.color = color
         self.position = position
         self.key = key
@@ -249,7 +249,7 @@ class Game:
         #  display_thread.join()
 
         # return fitness of each network
-        fitness = self.pacman.get_fitness_as_tuple()
+        fitness = self.pacman.fitness
         return fitness
 
     def actors_next_move(self, actor):

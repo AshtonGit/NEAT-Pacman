@@ -145,7 +145,7 @@ class Actor(GameObject):
 class Pacman(Actor):
 
     def __init__(self, position, key, controller):
-        super().__init__((0, 255, 255), position, 0.2, key, controller, 0)
+        super().__init__((0, 255, 255), position, 0.4, key, controller, 0)
         base_path = Path(__file__).parent.parent
         asset_path = str((base_path / "../assets").resolve())
         self.models = {"left": pygame.image.load(asset_path + "/pacman-left.png"),
@@ -163,7 +163,7 @@ class Pacman(Actor):
     # pacman opens and closes his mouth every 0.4 seconds
     def get_model(self):
         delta = datetime.now() - self.open_close_time
-        if delta.microseconds / 10000 > 20:
+        if delta.microseconds / 10000 > 15:
             self.is_closed = not self.is_closed
             self.open_close_time = datetime.now()
         if self.is_closed:
@@ -210,7 +210,7 @@ class Pacman(Actor):
 class Ghost(Actor):
 
     def __init__(self, color, model, position, key, controller):
-        super().__init__(color, position, 0.2, key, controller, 0)
+        super().__init__(color, position, 0.4, key, controller, 0)
         base_path = Path(__file__).parent.parent
         asset_path = str((base_path / "../assets").resolve())
         self.models = {"left": pygame.image.load(asset_path + model + "-left.png"),
@@ -435,7 +435,7 @@ def manage_ghost_fitness(game):
     # increase ghosts fitness by 1 for every second it spends within 3 tiles of pacman
     while not game.game_over:
         game.update_ghost_fitness()
-        sleep(1)
+        sleep(0.8)
 
 
 def end_game_if_timelimit_reached(game, max_time):
@@ -482,7 +482,7 @@ def end_game_if_actors_stuck(game, timeout):
         else:
             duration_inactive = 0
         # check position every second
-        sleep(0.8)
+        sleep(0.5)
 
 
 def softmax(values):
