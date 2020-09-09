@@ -11,10 +11,11 @@ checkpoint_path = (base_path / "neat-checkpoint-924").resolve()
 
 
 """ Uncomment these 3 lines to run a new simulation without using the text interface"""
+"""
 sim = PacmanExclusiveSimulation()
 pop = sim.new_population(pacman_exclusive_config_path)
 sim.run_simulation(pop, generations=20)
-
+"""
 
 
 print("Welcome to NEAT-Pacman")
@@ -35,7 +36,7 @@ while True:
                   "\n\t                All file paths are relative to the directory this program is located in")
             print("\t[generations]  -How many generations the simulation will run for")
 
-            print("eg pacman-exclusive new config/pac_config.conf 50")
+            print("eg pacman-exclusive new ../config/pacman_only_config.conf 50")
 
         else:
             game_mode = split[0]
